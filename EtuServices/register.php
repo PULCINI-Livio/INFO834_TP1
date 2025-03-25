@@ -5,12 +5,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Enregistrement de l'utilisateur (à remplacer par une logique de base de données)
-    // Pour l'instant, on affiche simplement les informations
-    echo "<p>Utilisateur enregistré :</p>";
-    echo "<p>Nom : $nom</p>";
-    echo "<p>Prénom : $prenom</p>";
-    echo "<p>Email : $email</p>";
+    // Hashage du mot de passe pour le stocker de manière sécurisée
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Connexion à la base de données
+    require 'config.php'; // Connexion à la base de données
+
+    // Insertion de l'utilisateur dans la table utilisateurs
+    $sql = "INSERT INTO utilisateurs (nom, prenom, email, password) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        die("Erreur de préparation de la requête : " . $conn->error);
+    }
+
+    $stmt->bind_param("ssss", $nom, $prenom, $email, $hashed_password);
+    if ($stmt->execute()) {
+        echo "<p>Utilisateur inscrit avec succès !</p>";
+    } else {
+        echo "<p>Erreur lors de l'inscription.</p>";
+    }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 

@@ -1,18 +1,41 @@
 <?php
 session_start();
+require 'config.php'; // Connexion à la base de données
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Vérification des identifiants (à remplacer par une vérification sécurisée)
-    if ($email === "admin@example.com" && $password === "password") {
-        $_SESSION['user'] = ['nom' => 'Admin', 'prenom' => 'User', 'email' => $email];
+    // Vérification de la connexion à la base de données
+    if (!$conn) {
+        die("Erreur de connexion à la base de données : " . mysqli_connect_error());
+    }
+
+    // Récupérer l'utilisateur depuis la base de données
+    $sql = "SELECT id, nom, prenom, password FROM utilisateurs WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    
+    if ($stmt === false) {
+        die("Erreur de préparation de la requête : " . $conn->error);
+    }
+
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id, $nom, $prenom, $hashed_password);
+    $stmt->fetch();
+
+    // Vérifier le mot de passe
+    if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
+        $_SESSION['user'] = ['id' => $id, 'nom' => $nom, 'prenom' => $prenom, 'email' => $email];
         header("Location: services.php");
         exit();
     } else {
         $error = "Email ou mot de passe incorrect.";
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
