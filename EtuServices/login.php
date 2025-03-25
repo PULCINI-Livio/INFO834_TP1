@@ -28,11 +28,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérifier le mot de passe
     if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
         // Appel au programme Python pour vérifier les connexions
-        $command = escapeshellcmd("python3 check_connections.py $email");
+        $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe check_connections.py $email";
+        $command = escapeshellcmd($cmd);
         $output = shell_exec($command);
         
+        // Afficher la sortie du script pour debug
+        var_dump($output);
+        var_dump(trim($output) == "OK");
         // Si la connexion est autorisée, l'utilisateur peut accéder aux services
-        if (trim($output) == "Connexion autorisée.") {
+        if (trim($output) == "OK") {
             $_SESSION['user'] = ['id' => $id, 'nom' => $nom, 'prenom' => $prenom, 'email' => $email];
             header("Location: services.php");
             exit();
