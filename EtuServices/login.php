@@ -27,9 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Vérifier le mot de passe
     if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
-        $_SESSION['user'] = ['id' => $id, 'nom' => $nom, 'prenom' => $prenom, 'email' => $email];
-        header("Location: services.php");
-        exit();
+        // Appel au programme Python pour vérifier les connexions
+        $command = escapeshellcmd("python3 check_connections.py $email");
+        $output = shell_exec($command);
+        
+        // Si la connexion est autorisée, l'utilisateur peut accéder aux services
+        if (trim($output) == "Connexion autorisée.") {
+            $_SESSION['user'] = ['id' => $id, 'nom' => $nom, 'prenom' => $prenom, 'email' => $email];
+            header("Location: services.php");
+            exit();
+        } else {
+            $error = "Trop de connexions. Accès refusé.";
+        }
     } else {
         $error = "Email ou mot de passe incorrect.";
     }
@@ -39,27 +48,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
-</head>
-<body>
-    <h1>Connexion</h1>
-    <form action="login.php" method="post">
-        <label for="email">Email :</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Se connecter</button>
-    </form>
-    <?php if (isset($error)): ?>
-        <p><?= $error ?></p>
-    <?php endif; ?>
-    <p><a href="accueil.php">Retour à l'accueil</a></p>
-</body>
-</html>
+<!-- HTML form -->
+<form action="login.php" method="post">
+    <label for="email">Email :</label>
+    <input type="email" id="email" name="email" required>
+    <br>
+    <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="submit">Se connecter</button>
+</form>
+
+<?php if (isset($error)): ?>
+    <p><?= $error ?></p>
+<?php endif; ?>
