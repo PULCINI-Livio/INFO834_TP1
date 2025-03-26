@@ -14,7 +14,7 @@ $email = $_SESSION['user']['email'];
 if (isset($_POST['achat'])) {
     $service = "achat";
     // La commande shell à exécuter
-    $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe incremente_achat_vente.py $email $service";
+    $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe redis_manager.py incremente_achat_vente $email $service";
     $command = escapeshellcmd($cmd);
     $output = shell_exec($command);
 
@@ -28,7 +28,7 @@ if (isset($_POST['achat'])) {
 if (isset($_POST['vente'])) {
     $service = "vente";
     // La commande shell à exécuter
-    $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe incremente_achat_vente.py $email $service";
+    $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe redis_manager.py incremente_achat_vente $email $service";
     $command = escapeshellcmd($cmd);
     $output = shell_exec($command);
 

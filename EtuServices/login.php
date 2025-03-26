@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérifier le mot de passe
     if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
         // Appel au programme Python pour vérifier les connexions
-        $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe check_connections.py $email";
+        $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe redis_manager.py check_and_increment_connections $email";
         $command = escapeshellcmd($cmd);
         $output = shell_exec($command);
         
