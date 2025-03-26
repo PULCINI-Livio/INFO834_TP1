@@ -1,3 +1,19 @@
+<?php
+// Vérifiez si le formulaire a été soumis
+if (isset($_POST['stats'])) {
+    // La commande shell à exécuter
+    $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe redis_manager.py afficher_statistiques";
+    $command = escapeshellcmd($cmd);
+    $output = shell_exec($command);
+
+    // Exécution de la commande shell
+    $output = shell_exec($command);
+
+    // Affichage du résultat de la commande
+    echo "<pre>$output</pre>";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,5 +29,9 @@
         <li><a href="register.php">S'inscrire</a></li>
         <li><a href="services.php">Nos services</a></li>
     </ul>
+    <form method="POST">
+        <!-- Bouton qui déclenche la commande -->
+        <button type="submit" name="stats">Mettre à jour les statistiques</button>
+    </form>
 </body>
 </html>

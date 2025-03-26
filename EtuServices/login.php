@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <br>
     <button type="submit">Se connecter</button>
 </form>
-
+<p><a href="accueil.php">Retour à l'accueil</a></p>
 <?php if (isset($error)): ?>
     <p><?= $error ?></p>
 <?php endif; ?>

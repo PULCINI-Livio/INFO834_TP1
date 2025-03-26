@@ -83,14 +83,31 @@ if sys.argv[1] == "check_and_increment_connections":
 
 # Fonction pour gérer les connexions utilisateur
 def increment_achat_vente(user_email, service):
-
     r.hincrby('user_connections', f"{user_email} : {service}'", 1)    # Incrémenter le nombre de connexions dépendant du service
     logging.info(f"user_connections updated, {user_email} incremented {service} by 1")
-
-
 
 
 if sys.argv[1] == "incremente_achat_vente":
     user_email = sys.argv[2]
     service = sys.argv[3]
     increment_achat_vente(user_email, service)
+
+def afficher_statistiques():
+    print("10 derniers utilisateurs connectés (more recent first):")
+    for i in range(10):
+        print(r.lrange("recent_users", i, i))
+
+    print("3 premiers utilisateurs les plus actifs")
+    print(r.zrevrange('user_activity', 0, 2))  # Récupère les 3 premiers utilisateurs les plus actifs
+
+    print("service le plus utilisé")
+    print(r.zrevrange('service_usage', 0, 0))  # Récupère le service le plus utilisé
+
+    print("3 utilisateurs les moins actifs")
+    print(r.zrange('user_activity', 0, 2))  # Récupère les 3 utilisateurs les moins actifs
+
+
+if sys.argv[1] == "afficher_statistiques":
+    afficher_statistiques()
+
+
