@@ -18,9 +18,6 @@ if (isset($_POST['achat'])) {
     $command = escapeshellcmd($cmd);
     $output = shell_exec($command);
 
-    // Exécution de la commande shell
-    $output = shell_exec($command);
-
     // Affichage du résultat de la commande
     echo "<pre>$output</pre>";
 }
@@ -30,9 +27,6 @@ if (isset($_POST['vente'])) {
     // La commande shell à exécuter
     $cmd = "C:\Users\pulci\AppData\Local\Programs\Python\Python311\python.exe redis_manager.py incremente_achat_vente $email $service";
     $command = escapeshellcmd($cmd);
-    $output = shell_exec($command);
-
-    // Exécution de la commande shell
     $output = shell_exec($command);
 
     // Affichage du résultat de la commande
